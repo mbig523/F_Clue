@@ -1,15 +1,22 @@
+import java.awt.*;
+import java.awt.image.BufferStrategy;
+
 // this class will probably hold most of the code
 
-public class Game {
+public class Game /**implements Runnable */{
 
-	private Board board;
-	
+	public String title;
 	public int width, height;
-		
+	
+	
+	// constructor for game title and size
 	public Game(String title, int width, int height) {
 				
 		this.width = width;
 		this.height = height;
-		board = new Board(title, width, height);
+		this.title = title;
+		new Board(title, width, height);
+		
 	}
+			
 }

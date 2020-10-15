@@ -14,9 +14,8 @@
 public class RunGame {
 			
 	public static void main(String args[]) {
-		new Game("Clue by Group F", 400,400);
+		Game clue = new Game("clue", 1000, 1000);
 		
-	
 	}
 	
 	
