@@ -14,8 +14,8 @@
 public class RunGame {
 			
 	public static void main(String args[]) {
-		GameBoard game = new GameBoard();
-		game.CreateBoard();
+		new Game("Clue by Group F", 400,400);
+		
 	
 	}
 	
