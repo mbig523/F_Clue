@@ -11,12 +11,11 @@
 	 * 
 	*/
 
+// this class will run the game
+
 public class RunGame {
-			
+	
 	public static void main(String args[]) {
-		Game clue = new Game("clue", 1000, 1000);
-		
+		new Board("Clue", 1250, 800);
 	}
-	
-	
 }
