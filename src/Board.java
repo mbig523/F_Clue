@@ -1,8 +1,7 @@
 import java.awt.*;
-import java.io.File;
 
-import javax.imageio.ImageIO;
 import javax.swing.*;
+
 
 // this class will create the game board
 public class Board extends JPanel {
@@ -11,7 +10,6 @@ public class Board extends JPanel {
 	private int width;
 	private int height;
 	
-	private JButton[][] boardTiles;
 	private JPanel boardPanel;	
 	
 	private JPanel detectivePanel;
@@ -61,221 +59,355 @@ public class Board extends JPanel {
 	private JPanel MakeBoard() {
 		int row = 18;
 		int col = 18;
+		Tiles[][] tiles = new Tiles[row][col];
 		
 		boardPanel = new JPanel();
-		boardPanel.setLayout(new GridLayout(row,col,-1,-1));
-		boardTiles = new JButton[row][col];
+		boardPanel.setLayout(new GridLayout(row, col, -1,-1));
 		
-		for(int i = 0; i < col; i++) {
-			for (int j = 0; j < row; j++) {
-			boardTiles[i][j] = new JButton();
-			boardTiles[i][j].setEnabled(false);
-			boardTiles[i][j].setFont(new Font("Arial", Font.BOLD, 12));
-			// boardTiles[i][j].setText("<html> i: " + i  + "<br> j: "+ j + "</html>"); // comment out this to remove button text
-			boardPanel.add(boardTiles[i][j]);
+		// array population
+		for (int i = 0; i < tiles.length; i++) {
+			for (int j = 0; j < tiles[0].length; j++) {
+				tiles[i][j] = new Tiles();
+				tiles[i][j].setEnabled(false);
+				boardPanel.add(tiles[i][j]);
 			}
 		}
 		
-		try {
-			door = ImageIO.read(new File("src/door.png")).getScaledInstance(50,50, Image.SCALE_DEFAULT);
-		}
-		catch (Exception e) {
-			
-		}
-		//kitchen
-		for(int j = 0; j<5; j++) {
-			for (int i =0; i<3; i++) {
-				boardTiles[i][j].setBorderPainted(false);
-				boardTiles[i][j].setBackground(Color.BLACK);
+		//kitchen (top left)
+		for(int i = 0; i<3; i++) {
+			for (int j =0; j<5; j++) {
+				tiles[i][j].setBorderPainted(false);
+				tiles[i][j].setBackground(Color.BLACK);
+				tiles[i][j].setRoom(true);
 				
+				//door(s)
 				if (i == 2 && j == 3) {
-					boardTiles[i][j].setBackground(null);
-					boardTiles[i][j].setIcon(new ImageIcon(door));
-					boardTiles[i][j].setBorderPainted(true);
-				}
-				
-			}
-		}
-		
-		//Ball room
-		for(int j = 7; j<11; j++) {
-				int i = 0;
-				boardTiles[i][j].setBorderPainted(false);
-				boardTiles[i][j].setBackground(Color.BLACK);
-			
-			for (int b = 6; b < 12; b++) {
-				for (int a = 1; a <4; a++) {
-					boardTiles[a][b].setBorderPainted(false);
-					boardTiles[a][b].setBackground(Color.BLACK);
+					tiles[i][j].setBorderPainted(true);
+					tiles[i][j].setDoor(true);
+					tiles[i][j].setTile(true);
+					tiles[i][j].setBorder(BorderFactory.createLineBorder(Color.red, 2));
+					}
+				// walls
+				if (i == 2) {
+					if (j == 0 || j == 1 || j == 2) {
+						tiles[i][j].setWall(true);
+					}
 					
-														
 				}
-			}				
-		}
-		
-		// i'm not proud of this block of code but its the only way
-		// i could get doors in those spots of the ballroom
-		boardTiles[2][6].setBackground(null);
-		boardTiles[2][6].setIcon(new ImageIcon(door));
-		boardTiles[2][6].setBorderPainted(true);
-		boardTiles[3][7].setBackground(null);;
-		boardTiles[3][7].setIcon(new ImageIcon(door));
-		boardTiles[3][7].setBorderPainted(true);
-		boardTiles[2][11].setBackground(null);
-		boardTiles[3][10].setBackground(null);;
-		boardTiles[2][11].setIcon(new ImageIcon(door));
-		boardTiles[3][10].setIcon(new ImageIcon(door));
-		boardTiles[2][11].setBorderPainted(true);
-		boardTiles[3][10].setBorderPainted(true);
-	
-		
-		//conservatory
-		
-		for (int j = 14; j<18; j++) {
-			for (int i = 0; i<4; i++) {
-				boardTiles[i][j].setBorderPainted(false);
-				boardTiles[i][j].setBackground(Color.BLACK);
 				
+				if (j == 4) {
+					if (i == 0 || i == 1 || i == 2) {
+						tiles[i][j].setWall(true);
+					}
+					
+				}
+				
+			}
+					
+		}
+			
+		
+		// ball room (top middle)
+		// top 3 squares
+		for(int j = 7; j<11; j++) {
+			int i = 0;
+			tiles[i][j].setBorderPainted(false);
+			tiles[i][j].setBackground(Color.BLACK);
+			tiles[i][j].setRoom(true);
+			tiles[i][j].setWall(true);
+		
+		// rest of room
+		for (int b = 6; b < 12; b++) {
+			for (int a = 1; a <4; a++) {
+				tiles[a][b].setBorderPainted(false);
+				tiles[a][b].setBackground(Color.BLACK);	
+				tiles[a][b].setRoom(true);
+				
+				//door(s)
+				if( (a == 2 && b ==6 )|| (a == 3 && b == 7) || ( a == 2 && b == 11 ) || (a ==3 && b ==10) ) {
+					tiles[a][b].setDoor(true);
+					tiles[a][b].setBorderPainted(true);
+					tiles[a][b].setBorder(BorderFactory.createLineBorder(Color.red, 2));
+				}
+				
+				// walls
+				if( (a == 1 && b == 6) || (a == 3 && b == 6) || (a == 3 && b == 8) || (a == 3 && b == 9) || (a == 3 && b == 11) || (a == 1 && b == 11)) {
+					tiles[a][b].setWall(true);
+				}				
+			}
+		}				
+	}
+		
+		
+		// conservatory (top right)
+		for (int i =0; i<4; i++) {
+			for (int j =14; j< 18; j++) {
+				tiles[i][j].setBackground(Color.BLACK);
+				tiles[i][j].setBorderPainted(false);
+				tiles[i][j].setRoom(true);
+				
+				//door
 				if (i == 3 && j == 14) {
-					boardTiles[i][j].setBackground(null); // door to conservatory [3,14]
-					boardTiles[i][j].setIcon(new ImageIcon(door));
-					boardTiles[i][j].setBorderPainted(true);
+					tiles[i][j].setDoor(true);
+					tiles[i][j].setBorderPainted(true);
+					tiles[i][j].setBorder(BorderFactory.createLineBorder(Color.red, 2));
 				}
-			}
-		}
-		
-		
-		// dining room
-		
-		for (int j = 0; j<5; j++) {
-			for (int i = 6; i<11; i++) {
-				boardTiles[i][j].setBorderPainted(false);
-				boardTiles[i][j].setBackground(Color.BLACK);
-				
-				if (i == 7 && j == 4) {
-					boardTiles[i][j].setBackground(null); // door to kitchen [7,4]
-					boardTiles[i][j].setIcon(new ImageIcon(door));
-					boardTiles[i][j].setBorderPainted(true);
+				//walls
+				if(i == 3) {
+					if(j == 15 || j == 16 || j == 17) {
+						tiles[i][j].setWall(true);
+						
+					}
+					
 				}
 				
-				if (i == 10 && j == 3) {
-					boardTiles[i][j].setBackground(null); // door to kitchen [10,3]
-					boardTiles[i][j].setIcon(new ImageIcon(door));
-					boardTiles[i][j].setBorderPainted(true);
-				}
-			}
-		}
-		
-		// middle area
-		
-		for (int j = 7; j<12; j++) {
-			for (int i= 6; i< 11; i++) {
-				boardTiles[i][j].setBorderPainted(false);
-				boardTiles[i][j].setBackground(Color.BLACK);
-			}
-		}
-		
-		//billiard room
-		for (int j = 14; j<18; j++) {
-			for (int i = 5; i<8; i++) {
-				boardTiles[i][j].setBorderPainted(false);
-				boardTiles[i][j].setBackground(Color.BLACK);
-				
-				if (i == 5 && j == 14) {
-					boardTiles[i][j].setBackground(null); // door to billiard  [5,14]
-					boardTiles[i][j].setIcon(new ImageIcon(door));
-					boardTiles[i][j].setBorderPainted(true);
+				if(j == 14) {
+					if (i == 0 || i == 1 || i ==1) {
+						tiles[i][j].setWall(true);
+					}
+					
 				}
 				
-				if (i == 7 && j == 16) {
-					boardTiles[i][j].setBackground(null); // door to billiard  [7,14]
-					boardTiles[i][j].setIcon(new ImageIcon(door));
-					boardTiles[i][j].setBorderPainted(true);
-				}
-	
-			}
-		}
-		
-		// library
-		
-		for (int j = 14; j<18; j++) {
-			for(int i = 10; i<13; i++) {
-				boardTiles[i][j].setBorderPainted(false);
-				boardTiles[i][j].setBackground(Color.BLACK);
-				
-				if (i == 11 && j == 14) {
-					boardTiles[i][j].setBackground(null); // door to billiard  [11,14]
-					boardTiles[i][j].setIcon(new ImageIcon(door));
-					boardTiles[i][j].setBorderPainted(true);
-				}
-				
-				if (i == 10 && j == 15) {
-					boardTiles[i][j].setBackground(null); // door to billiard  [10,15]
-					boardTiles[i][j].setIcon(new ImageIcon(door));
-					boardTiles[i][j].setBorderPainted(true);
-				}
 				
 			}
 		}
 		
-		// lounge
+		// dining room (middle left)
 		
-		for (int j = 0; j<5; j++) {
-			for (int i = 14; i<18; i++) {
-				boardTiles[i][j].setBorderPainted(false);
-				boardTiles[i][j].setBackground(Color.BLACK);
+		for (int i = 6; i <11; i++) {
+			for (int j = 0; j<5; j++) {
+				tiles[i][j].setBackground(Color.BLACK);
+				tiles[i][j].setBorderPainted(false);
+				tiles[i][j].setRoom(true);
+				
+				//doors
+				if(i == 7 && j == 4 || i == 10 && j == 3) {
+					tiles[i][j].setDoor(true);
+					tiles[i][j].setBorderPainted(true);
+					tiles[i][j].setBorder(BorderFactory.createLineBorder(Color.red, 2));
+				}
+				
+				
+				
+				// walls
+				if (i == 10) {
+					if (j == 0 || j == 1 || j == 2) {
+						tiles[i][j].setWall(true);
+						
+					}
+					
+				}
+				
+				if (i == 6) {
+					if (j == 0 || j == 1 || j == 2 || j ==3) {
+						tiles[i][j].setWall(true);
+						
+					}
+				}
+				
+				if (j == 4) {
+					if (i == 6 || i == 8 || i == 9 || i == 10) {
+						tiles[i][j].setWall(true);
+						
+						
+					}
+					
+				}
+			}
+		}
+		
+		// middle room
+		
+		for (int i = 6; i <11; i++) {
+			for(int j = 7; j<12; j++) {
+				tiles[i][j].setBackground(Color.BLACK);
+				tiles[i][j].setBorderPainted(false);
+				tiles[i][j].setWall(true);
+				tiles[i][j].setRoom(true);
+			}
+		}
+				
+		// billiard room (middle top right)
+		for (int i = 5; i <8; i++) {
+			for (int j = 14; j<18; j++) {
+				tiles[i][j].setBackground(Color.BLACK);
+				tiles[i][j].setBorderPainted(false);
+				tiles[i][j].setRoom(true);
+				
+				//doors 
+				if (i == 5 && j == 14 || i == 7 && j == 16) {
+					tiles[i][j].setDoor(true);
+					tiles[i][j].setBorderPainted(true);
+					tiles[i][j].setBorder(BorderFactory.createLineBorder(Color.red, 2));
+				}
+				
+				// walls
+				if (i == 5) {
+					if (j == 15 || j == 16 || j == 17) {
+						tiles[i][j].setWall(true);
+					}
+				}
+				
+				if (i == 6 && j == 14) {
+					tiles[i][j].setWall(true);
+				}
+				
+				if (i == 7) {
+					if (j == 14 || j == 15 || j == 17) {
+						tiles[i][j].setWall(true);
+					}
+				}
+			}
+		}
+		
+		// library (middle bottom right)
+		for (int i = 10; i< 13; i++) {
+			for (int j = 14; j< 18; j++) {
+				tiles[i][j].setBorderPainted(false);
+				tiles[i][j].setBackground(Color.BLACK);
+				tiles[i][j].setRoom(true);
+				
+				//doors
+				if (i == 11 && j == 14 || i == 10 && j == 15) {
+					tiles[i][j].setDoor(true);
+					tiles[i][j].setBorderPainted(true);
+					tiles[i][j].setBorder(BorderFactory.createLineBorder(Color.red, 2));
+				}
+				
+				//walls 
+				if (i == 10) {
+					if (j == 14 || j == 16 || j == 17) {
+						tiles[i][j].setWall(true);
+						
+					}
+				}
+				
+				if (i == 12) {
+					if (j == 14 || j == 15 || j == 16 || j == 17) {
+						tiles[i][j].setWall(true);
+						
+					}
+				}
+			}
+		}
+		
+		// lounge (bottom left)
+		for (int i = 14; i < 18; i++) {
+			for (int j = 0; j<5; j++) {
+				tiles[i][j].setBorderPainted(false);
+				tiles[i][j].setBackground(Color.BLACK);
+				tiles[i][j].setRoom(true);
+				
+				//doors
 				
 				if (i == 14 && j == 4) {
-					boardTiles[i][j].setBackground(null); // door to billiard  [14,4]
-					boardTiles[i][j].setIcon(new ImageIcon(door));
-					boardTiles[i][j].setBorderPainted(true);
+					tiles[i][j].setDoor(true);
+					tiles[i][j].setBorderPainted(true);
+					tiles[i][j].setBorder(BorderFactory.createLineBorder(Color.red, 2));
+				}
+				
+				//walls 
+				if (i == 14) {
+					if (j == 0 || j == 1 || j == 2 || j == 3) {
+						tiles[i][j].setWall(true);
+					}
+				}
+				
+				if (j == 4) {
+					if (i == 17 || i == 16 || i == 15) {
+						tiles[i][j].setWall(true);
+						}				
+				}
+				
+				if (i == 17) {
+					if (j < 5) {
+						tiles[i][j].setWall(true);
+					}
 				}
 			}
 		}
 		
-		// hall
-		
-		for (int j = 7; j< 12; j++) {
-			for (int i = 13; i< 18; i++) {
-				boardTiles[i][j].setBorderPainted(false);
-				boardTiles[i][j].setBackground(Color.BLACK);
+		// hall (bottom middle)
+		for (int i = 13; i< 18; i++) {
+			for (int j = 7; j< 12; j++) {
+				tiles[i][j].setBorderPainted(false);
+				tiles[i][j].setBackground(Color.BLACK);
+				tiles[i][j].setRoom(true);
 				
-				if (i == 13 && j == 9) {
-					boardTiles[i][j].setBackground(null); // door to billiard  [13,9]
-					boardTiles[i][j].setIcon(new ImageIcon(door));
-					boardTiles[i][j].setBorderPainted(true);
+				//doors
+				
+				if(i == 13 && j == 9 || i == 14 && j == 11) {
+					tiles[i][j].setDoor(true);
+					tiles[i][j].setBorderPainted(true);
+					tiles[i][j].setBorder(BorderFactory.createLineBorder(Color.red, 2));
 				}
 				
-				if (i == 14 && j == 11) {
-					boardTiles[i][j].setBackground(null); // door to billiard  [14,11]
-					boardTiles[i][j].setIcon(new ImageIcon(door));
-					boardTiles[i][j].setBorderPainted(true);
+				//walls 
+				if (i == 13 )
+					if (j == 7 || j == 8 || j == 10 || j == 11) {
+						tiles[i][j].setWall(true);
+						
+					}
+				if (j == 7) {
+					if (i == 14 || i == 15 || i == 16 || i == 17) {
+						tiles[i][j].setWall(true);
+						
+					}
 				}
+				
+				if (j == 11) {
+					if (i == 15 || i == 16 || i == 17) {
+						tiles[i][j].setWall(true);
+						
+					}
+				}
+				
 			}
 		}
 		
-		// study
-		
-		for (int j = 14; j< 18; j++) {
-			for (int i = 15; i< 18; i++) {
-				boardTiles[i][j].setBorderPainted(false);
-				boardTiles[i][j].setBackground(Color.BLACK);
+		//Study (bottom right)
+		for (int i = 15; i< 18; i++) {
+			for (int j = 14; j< 18; j++) {
+				tiles[i][j].setBorderPainted(false);
+				tiles[i][j].setBackground(Color.BLACK);
+				tiles[i][j].setRoom(true);
 				
+				//door
 				if (i == 15 && j == 14) {
-					boardTiles[i][j].setBackground(null); // door to billiard  [15,14]
-					boardTiles[i][j].setIcon(new ImageIcon(door));
-					boardTiles[i][j].setBorderPainted(true);
+					tiles[i][j].setDoor(true);
+					tiles[i][j].setBorderPainted(true);
+					tiles[i][j].setBorder(BorderFactory.createLineBorder(Color.red, 2));
 				}
+				
+				if (i == 15) {
+					if (j == 15 || j == 16 || j == 17) {
+						tiles[i][j].setWall(true);
+						
+					}
+				}
+				
+				if (i == 16 && j == 14 || i == 17 && j == 14) {
+					tiles[i][j].setWall(true);
+					
+				}
+			
+			
+			}
+		}		
+		
+		// printing all tile information
+		for (int i = 0; i < tiles.length; i++) {
+			for (int j = 0; j < tiles[0].length; j++) {
+				System.out.println(tiles[i][j].toString(i, j));
 			}
 		}
-		
-		
-		
 		
 		
 		return boardPanel;
 		
-	}
+		
+}
+
 	
 	private JPanel RoomLabels() {
 		JLabel kitchen, ballRoom, conservatory, diningRoom, center,  billiardRoom, lounge, hall, library, study;
