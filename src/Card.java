@@ -29,5 +29,22 @@ public class Card {
 			if (a.getCardType() == this.cardType && a.getName() == this.name) return true;
 			return false;
 		}
+	
+	
+	//Detective Card
+	private Suggestion solution;
+	private Map<Character, Set<Card>> knownCard;
+	
+	public void createSolution() {
+		// after the character, weapon, and location cards code
+		Solution = new Suggestion(solutionCharacter, solutionWeapon, solutionLocation);
+	}
+	
+	public String refutreSuggestion(Suggestion suggest) {
+		Set<cardType> knownCardsForPlayer = knownCard.get(currentPlayer);
+		
+		List<cardType> cardsSuggestion = suggest.asList();
+		Collections.shuffle(cardsSuggestion);
+	}
 		
 }
