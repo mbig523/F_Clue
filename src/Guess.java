@@ -153,9 +153,9 @@ public class Guess { //will need a scanner in main to allow users to guess
                 break;
 
             default:
-                System.out.println("That is not a weapon choice, try again.");
+                System.out.println("That is not a suspect choice, try again.");
                 System.out.println();
-                guessWeapon();
+                guessSuspect();
         }
     }
     public void Guesses(){
